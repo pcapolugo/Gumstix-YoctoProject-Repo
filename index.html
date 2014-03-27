@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Gumstix Yocto Project Repo : Create bootable images for your Gumstix COMs" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Gumstix Yocto Project Repo</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/gumstix/Gumstix-YoctoProject-Repo">View on GitHub</a>
+
+          <h1 id="project_title">Gumstix Yocto Project Repo</h1>
+          <h2 id="project_tagline">Create bootable images for your Gumstix COMs</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/gumstix/Gumstix-YoctoProject-Repo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/gumstix/Gumstix-YoctoProject-Repo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="gumstix-repo-manifests-for-the-yocto-project-build-system" class="anchor" href="#gumstix-repo-manifests-for-the-yocto-project-build-system"><span class="octicon octicon-link"></span></a>Gumstix Repo Manifests for the Yocto Project Build System</h1>
+
+<p>This repository provides Repo manifests to setup the Yocto build system for 
+supported Gumstix products.</p>
+
+<hr><p><strong>Note:</strong>
+If you already have a Yocto Project setup and want only the Gumstix BSP layer, 
+use the meta-gumstix repository found here: 
+git://github.com/gumstix/meta-gumstix.git.</p>
+
+<hr><p>The Yocto Project allows the creation of custom linux distributions for embedded
+systems, including Gumstix-based systems.  It is a collection of git
+repositories known as <em>layers</em> each of which provides <em>recipes</em> to build
+software packages as well as configuration information.</p>
+
+<p>Repo is a tool that enables the management of many git repositories given a 
+single <em>manifest</em> file.  Tell repo to fetch a manifest from this repository and
+it will fetch the git repositories specified in the manifest and, by doing so,
+setup a Yocto Project build environment for you!</p>
+
+<h2>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<p><strong>1.  Install Repo.</strong></p>
+
+<p>Download the Repo script:</p>
+
+<pre><code>$ curl http://commondatastorage.googleapis.com/git-repo-downloads/repo &gt; repo
+</code></pre>
+
+<p>Make it executable:</p>
+
+<pre><code>$ chmod a+x repo
+</code></pre>
+
+<p>Move it on to your system path:</p>
+
+<pre><code>$ sudo mv repo /usr/local/bin/
+</code></pre>
+
+<p>If it is correctly installed, you should see a Usage message when invoked
+with the help flag.</p>
+
+<pre><code>$ repo --help
+</code></pre>
+
+<p><strong>2.  Initialize a Repo client.</strong></p>
+
+<p>Create an empty directory to hold your working files:</p>
+
+<pre><code>$ mkdir yocto
+$ cd yocto
+</code></pre>
+
+<p>Tell Repo where to find the manifest:</p>
+
+<pre><code>$ repo init -u git://github.com/gumstix/Gumstix-YoctoProject-Repo.git 
+</code></pre>
+
+<p>A successful initialization will end with a message stating that Repo is
+initialized in your working directory. Your directory should now
+contain a .repo directory where repo control files such as the manifest are
+stored but you should not need to touch this directory.</p>
+
+<hr><p><strong>Note:</strong>
+You can use the <strong>-b</strong> switch to specify the branch of the repository
+to use.  We develop on the guaranteed-to-break <strong>dev</strong> branch.  Most people should use
+the <strong>master</strong> branch, which should at least compile.</p>
+
+<p>The <strong>-m</strong> switch selects the manifest file (default is <em>default.xml</em>).
+Our default.xml on <strong>master</strong> is designed to be stable as it <em>pins</em>
+particular commits.</p>
+
+<p>To test out the bleeding edge, type:</p>
+
+<pre><code>$ repo init -u git://github.com/gumstix/Gumstix-YoctoProject-Repo.git -b dev
+$ repo sync
+</code></pre>
+
+<p>To get back to the known stable version, type:</p>
+
+<pre><code>$ repo init -u git://github.com/gumstix/Gumstix-YoctoProject-Repo.git -b master
+$ repo sync
+</code></pre>
+
+<p>Also you can get a specific version of Yocto Project:</p>
+
+<p>For example,</p>
+
+<pre><code>$ repo init -u git://github.com/gumstix/Gumstix-YoctoProject-Repo.git -b refs/tags/danny
+</code></pre>
+
+<p>To learn more about repo, look at <a href="http://source.android.com/source/version-control.html">http://source.android.com/source/version-control.html</a> </p>
+
+<hr><p><strong>3.  Fetch all the repositories:</strong></p>
+
+<pre><code>$ repo sync
+</code></pre>
+
+<p>Now go turn on the coffee machine as this may take 20 minutes depending on
+your connection.</p>
+
+<p><strong>4.  Initialize the Yocto Project Build Environment.</strong></p>
+
+<pre><code>$ export TEMPLATECONF=meta-gumstix-extras/conf 
+$ source ./poky/oe-init-build-env
+</code></pre>
+
+<p>This copies default configuration information into the <strong>poky/build/conf</strong>
+directory and sets up some environment variables for the build system.  This configuration
+directory is not under revision control; you may wish to edit these configuration
+files for your specific setup. In particular, change the <code>MACHINE</code> variable in <strong>conf/local.conf</strong> if you are
+not building for the Overo (default).</p>
+
+<p><strong>5.  Build an image:</strong></p>
+
+<p>This process downloads several gigabytes of source code and then proceeds to
+do an awful lot of compilation so make sure you have plenty of space (25GB
+minimum), and expect a day or so of build time depending on your network
+connection.  Don't worry---it is just the first build that takes a while.</p>
+
+<pre><code>$ bitbake gumstix-console-image
+</code></pre>
+
+<p>If everything goes well, you should have a compressed root filesystem
+tarball as well as kernel and bootloader binaries available in your
+<strong>tmp/deploy/images/{ overo | duovero | pepper }</strong> directory.  If you run into problems, the most likely
+candidate is missing software packages.  Check out
+<a href="http://www.yoctoproject.org/docs/current/yocto-project-qs/yocto-project-qs.html#resources">http://www.yoctoproject.org/docs/current/yocto-project-qs/yocto-project-qs.html#resources</a>
+for the list of required packages for operating system. Also, take
+a look to be sure your operating system is supported:
+<a href="https://wiki.yoctoproject.org/wiki/Distribution_Support">https://wiki.yoctoproject.org/wiki/Distribution_Support</a></p>
+
+<p><strong>6. Create a bootable micro SD card:</strong></p>
+
+<p>You are one step closer to booting your Gumstix with the new image you built! 
+First you have to create two partitions: <code>boot</code> and <code>rootfs</code>. We have included 
+a small script to help you out with it. Change your directory to 
+<strong>poky/meta-gumstix-extras/scripts</strong> and you should see a shell script named mk2partsd.
+Pop in your micro SD card to your card writer, and find out the location of 
+the block device by running <code>dmesg</code>. Now you can run the script as following:</p>
+
+<pre><code>$ sudo ./mk2partsd &lt;block device&gt; 
+</code></pre>
+
+<p>If you get an error, make sure your operating system has not automatically mounted 
+the drives. </p>
+
+<p>Once this is successful, go ahead and mount both the drives. </p>
+
+<p><strong>7. Flash your image:</strong></p>
+
+<p>Almost there. Now you just have to populate the card with the image you built. 
+Go to the deploy directory as mentioned in step 5:</p>
+
+<pre><code>$ cd build/tmp/deploy/images/{overo|duovero|pepper}   
+</code></pre>
+
+<p>Write the bootloader, kernel and the root file system into your card:</p>
+
+<pre><code>$ cp MLO u-boot.img uImage /media/boot 
+$ sudo tar xaf gumstix-console-image.tar.bz2 -C /media/rootfs --strip-components=1
+</code></pre>
+
+<p>And you should make sure all the files are written:</p>
+
+<pre><code>$ sync
+</code></pre>
+
+<p>Hooray you are done!</p>
+
+<h2>
+<a name="staying-up-to-date" class="anchor" href="#staying-up-to-date"><span class="octicon octicon-link"></span></a>Staying Up to Date</h2>
+
+<p>To pick up the latest changes for all source repositories, run:</p>
+
+<pre><code>$ repo sync
+</code></pre>
+
+<p>Enter the Yocto Project build environment:</p>
+
+<pre><code>$ source poky/oe-init-build-env
+
+If you forget to setup these environment variables prior to bitbaking, your 
+OS will complain that it can't find bitbake on the path.  Don't try to
+install bitbake using a package manager, just run the above command.
+</code></pre>
+
+<p>You can then rebuild as before:</p>
+
+<pre><code>$ bitbake gumstix-console-image
+</code></pre>
+
+<h2>
+<a name="starting-fresh" class="anchor" href="#starting-fresh"><span class="octicon octicon-link"></span></a>Starting Fresh</h2>
+
+<p>So something broke... what do you do now?</p>
+
+<p>There are several degrees of <em>starting fresh</em>: individual packages can be 
+rebuilt or the whole system can be reconstructed.</p>
+
+<ol>
+<li>clean a package: bitbake  -c cleansstate</li>
+<li>re-download package: bitbake  -c cleanall</li>
+<li>destroy everything but downloads: rm -rf build/sstate-cache build/tmp (or wherever your sstate and work directories are)</li>
+<li>destroy it all (not recommended): rm -rf build</li>
+</ol><hr><p><strong>Note:</strong>
+If you've made a change to a recipe and want the package to be rebuilt, just 
+increment the recipe version (the PR variable); cleaning is not necessary.</p>
+
+<p>To understand better how bitbake processes recipes, look at the excellent 
+documentation:
+<a href="http://www.yoctoproject.org/docs/current/poky-ref-manual/poky-ref-manual.html">http://www.yoctoproject.org/docs/current/poky-ref-manual/poky-ref-manual.html</a>.</p>
+
+<hr><p>To make sense of the differences between these cleaning methods, it is useful to
+ understand that Yocto caches both the downloaded source files for all the 
+packages it tries to build (the DL_DIR configuration parameter) and the packages
+once built (the SSTATE_DIR configuration parameter). Typically, deleting the
+downloaded source is a bad idea---this just means re-fetching gigabytes of code
+which wastes network bandwidth. Cleaning the sstate cache for a particular
+package ensures that it actually gets rebuilt from source rather than simply
+restored from the cache.</p>
+
+<h2>
+<a name="customize" class="anchor" href="#customize"><span class="octicon octicon-link"></span></a>Customize</h2>
+
+<p>Sooner or later, you'll want to customize some aspect of the image either adding
+ more packages, picking up some upstream patches, or tweaking your kernel. To
+this, you'll want to customize the Repo manifest to point at different
+repositories and branches or pull in additional meta-layers.</p>
+
+<p>Clone this repository (or fork it on github):</p>
+
+<pre><code>$ git clone git://github.com/gumstix/Gumstix-YoctoProject-Repo.git
+</code></pre>
+
+<p>Make your changes (and contribute them back if they are generally useful), and
+then re-initialize your repo client</p>
+
+<pre><code>$ repo init -u &lt;file:///path/to/your/git/repository.git&gt;
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Gumstix Yocto Project Repo maintained by <a href="https://github.com/gumstix">gumstix</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
